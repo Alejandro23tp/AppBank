@@ -8,8 +8,36 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'login',
     pathMatch: 'full'
+  },
+  {
+    path: 'login',
+    loadChildren: () => import('./paginas/login/login.module').then( m => m.LoginPageModule)
+  },
+  {
+    path: 'principal',
+    loadChildren: () => import('./paginas/principal/principal.module').then( m => m.PrincipalPageModule)
+  },
+  {
+    path: 'participantes',
+    loadChildren: () => import('./paginas/participantes/participantes.module').then( m => m.ParticipantesPageModule)
+  },
+  {
+    path: 'nuevoparticipante',
+    loadChildren: () => import('./paginas/nuevoparticipante/nuevoparticipante.module').then( m => m.NuevoparticipantePageModule)
+  },
+  {
+    path: 'pagosemanal',
+    loadChildren: () => import('./paginas/pagosemanal/pagosemanal.module').then( m => m.PagosemanalPageModule)
+  },
+  {
+    path: 'prestamos',
+    loadChildren: () => import('./paginas/prestamos/prestamos.module').then( m => m.PrestamosPageModule)
+  },
+  {
+    path: 'reg-prestamos',
+    loadChildren: () => import('./paginas/reg-prestamos/reg-prestamos.module').then( m => m.RegPrestamosPageModule)
   },
 ];
 

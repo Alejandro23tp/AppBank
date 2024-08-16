@@ -1,0 +1,48 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Registrar Préstamos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <form (ngSubmit)="onSubmit()">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Registrar Préstamo</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">Participante ID</ion-label>
+          <ion-input [(ngModel)]="prestamoData.part_id" name="part_id" type="text" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Semana</ion-label>
+          <ion-select [(ngModel)]="prestamoData.semana" name="semana" (ionChange)="calcularInteres()" required>
+            <ion-select-option *ngFor="let semana of semanas" [value]="semana.nombre">
+              {{ semana.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Préstamo</ion-label>
+          <ion-input [(ngModel)]="prestamoData.prestamo" name="prestamo" type="number" (ionChange)="calcularInteres()" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Interés (%)</ion-label>
+          <ion-input [(ngModel)]="prestamoData.interes" name="interes" type="number" min="0" step="0.01" (ionChange)="validarInteres()" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Fecha del Préstamo</ion-label>
+          <input type="date" [(ngModel)]="prestamoData.prestamofecha" name="prestamofecha" required />
+        </ion-item>
+
+        <ion-button expand="full" type="submit" color="primary">Registrar Préstamo</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </form>
+</ion-content>

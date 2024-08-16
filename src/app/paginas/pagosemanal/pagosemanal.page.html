@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Pagos Semanales</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Pagos Semanales</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title size="large" color="primary">Cupos: {{ cupos }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="floating">Inicio de la Semana:</ion-label>
+        <div style="margin-bottom: 20px;"></div> <!-- Espacio adicional -->
+        <ion-input [value]="calcularInicioSemana()" readonly></ion-input>
+      </ion-item>
+    </ion-card-content>
+    
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Realizar Pago Semanal</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Semanas</ion-label>
+        <ion-select placeholder="Seleccione una semana" [(ngModel)]="pago.semana" name="semana">
+          <ion-select-option *ngFor="let semana of semanas" [value]="semana">{{ semana.nombre }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Valor</ion-label>
+        <ion-input [(ngModel)]="pago.valor" name="valor" type="number" readonly></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label >Fecha</ion-label>
+        <input type="date" [(ngModel)]="pago.fecha" name="fecha" required>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-button expand="block" color="primary" shape="round" (click)="realizarPagoSemanal()">Realizar Pago Semanal</ion-button>
+</ion-content>

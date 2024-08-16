@@ -1,0 +1,96 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Participantes</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Selecciona un participante</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Participantes</ion-label>
+        <ion-select name="participantes" placeholder="Participantes" [(ngModel)]="selectedParticipanteId" (ionChange)="seleccionarParticipante($event)">
+          <ion-select-option *ngFor="let participante of participantes" [value]="participante.part_id">
+            {{ participante.part_nombre }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-button expand="block" color="secondary" fill="clear" shape="round" (click)="agregarParticipante()">Agregar/Editar Participante</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Semanas</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ngx-datatable class="material"
+        [rows]="filas"
+        [columns]="[
+          { prop: 'semana', name: 'Semana', width: 100 },
+          { prop: 'valor', name: 'Valor', width: 100 },
+          { prop: 'fecha', name: 'Fecha', width: 150 },
+          { prop: 'responsable', name: 'Responsable', width: 150 },
+          { prop: 'estado', name: 'Estado', width: 100 }
+        ]"
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [rowHeight]="50" 
+        [scrollbarV]="true"
+        [scrollbarH]="true"
+        class="datatable"
+        style="margin-top: 20px;">
+      </ngx-datatable>
+      <ion-button expand="block" color="primary" shape="round" (click)="agregarPagoSemanal()" [disabled]="!selectedParticipanteId">Agregar Pago Semanal</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Préstamos</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ngx-datatable class="material"
+        [rows]="prestamos"
+        [columns]="[
+          {prop: 'semana', name: 'Semana', width: 150},
+          { prop: 'prestamo', name: 'Préstamo', width: 150 },
+          { prop: 'interes', name: 'Interés', width: 100 },
+          { prop: 'fecha', name: 'Fecha', width: 150 },
+          { prop: 'estado', name: 'Estado', width: 100 }
+        ]"
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        [rowHeight]="50" 
+        [scrollbarV]="true"
+        [scrollbarH]="true"
+        class="datatable"
+        style="margin-top: 20px;">
+      </ngx-datatable>
+      <ion-button (click)="reg_prestamo()" expand="block" color="primary" shape="round" [disabled]="!selectedParticipanteId">Registrar Préstamo</ion-button>
+      <ion-button expand="block" color="secondary" shape="round" (click)="pagarPrestamo()" [disabled]="!selectedParticipanteId">Pagar Préstamo</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ng-template #estadoTemplate let-row="row" let-value="value">
+    <ion-icon [name]="value" size="large"></ion-icon>
+  </ng-template>
+</ion-content>
+
+<style>
+  ion-card {
+    margin-bottom: 20px;
+  }
+
+  .datatable {
+    margin-top: 20px;
+  }
+</style>

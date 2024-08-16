@@ -1,0 +1,91 @@
+/* Base styles (apply for both light and dark modes) */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f5f7; /* Light background color */
+    color: #333; /* Default text color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensures full viewport height */
+  }
+  
+  .login-container {
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 10px; /* Consistent border radius */
+    background-color: #fff; /* Light mode background */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+  
+  ion-header, ion-content {
+    padding: 0; /* Remove default padding */
+  }
+  
+  ion-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000000; /* Default text color */
+  }
+  
+  ion-toolbar {
+    background-color: #3f51b5; /* Initial toolbar color (can be adjusted) */
+  }
+  
+  ion-item {
+    margin-bottom: 15px;
+    --border-width: 0; /* Remove Ionic's default item border */
+  }
+  
+  ion-label {
+    font-size: 16px;
+  }
+  
+  ion-input {
+    padding: 8px;
+    border: 1px solid #ccc; /* Adjust border color */
+    border-radius: 4px;
+    width: 100%;
+  }
+  
+  ion-button {
+    background-color: #45bad7; /* Green color for light mode */
+    color: white;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  }
+  
+  ion-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+  }
+  
+  /* Dark mode styles (override base styles) */
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #222;
+      color: #ddd;
+    }
+  
+    .login-container {
+      background-color: #333; /* Dark mode background */
+      box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1); /* Adjust shadow for dark mode */
+    }
+  
+    ion-toolbar, ion-item {
+      background-color: #444; /* Adjust background color for dark mode */
+    }
+  
+    ion-input, ion-button {
+      border-color: #555; /* Adjust border color for dark mode */
+    }
+  
+    ion-button {
+      background-color: #3f51b5; /* Blue color for dark mode */
+    }
+  
+    ion-button:hover {
+      background-color: #283a7c; /* Darker blue on hover */
+    }
+  }
+  

@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>BANCO AMIGO</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="login-container">
+  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+    <ion-item lines="none"> <ion-label position="stacked">Correo electrónico</ion-label>
+      <ion-input formControlName="ci" type="email" required></ion-input>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label position="stacked">Contraseña</ion-label>
+      <ion-input formControlName="clave" type="password" required></ion-input>
+    </ion-item>
+    <ion-button expand="full" type="submit" [disabled]="loginForm.invalid">Iniciar sesión</ion-button>
+  </form>
+
+  <ion-toast
+    *ngIf="errorMessage"
+    [message]="errorMessage"
+    duration="2000"
+    position="bottom"
+    color="danger">
+  </ion-toast>
+</ion-content>

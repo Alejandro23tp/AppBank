@@ -1,0 +1,44 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Prestámos</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Registro de Pagos</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Semana</ion-label>
+        <ion-select placeholder="Seleccione Semana" [(ngModel)]="prestamo.semana">
+          <ion-select-option *ngFor="let semana of semanas" [value]="semana.sp_Snombre">
+            {{ semana }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Valor</ion-label>
+        <ion-input type="number" [(ngModel)]="prestamo.valor" ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label >Fecha</ion-label>
+        <input type="date" [(ngModel)]="prestamo.fecha" name="fecha" required>
+      </ion-item>
+
+      <ion-button expand="block" color="primary" shape="round" (click)="registrarPrestamo()">Registrar Préstamo</ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<style>
+  ion-card {
+    margin-bottom: 20px;
+  }
+</style>
