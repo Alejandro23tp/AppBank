@@ -39,6 +39,14 @@ const routes: Routes = [
     path: 'reg-prestamos',
     loadChildren: () => import('./paginas/reg-prestamos/reg-prestamos.module').then( m => m.RegPrestamosPageModule)
   },
+  {
+    path: 'semanal',
+    loadChildren: () => import('./paginas/semanal/semanal.module').then( m => m.SemanalPageModule)
+  },
+  {
+    path: 'recordatorios',
+    loadChildren: () => import('./paginas/recordatorios/recordatorios.module').then( m => m.RecordatoriosPageModule)
+  },
 ];
 
 @NgModule({

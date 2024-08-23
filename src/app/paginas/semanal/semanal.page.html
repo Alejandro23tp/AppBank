@@ -1,0 +1,40 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-title>Tabla Semanal</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Totales de las Semanas</ion-card-title>
+    </ion-card-header>
+
+    <ngx-datatable class="material"
+    [rows]="filas"
+    [columns]="[{width:20},
+      { prop: 'Semana', name: 'Semana', width: 100, },
+      { prop: 'TotalSemana', name: 'Total Semana', width: 100 },
+      { prop: 'TotalPrestamos', name: 'Total Prestamos', width: 150 },
+      { prop: 'totalinteres', name: 'Total Intereses', width: 150 },
+      { prop: 'prestamoscancelado', name: 'Prestamos Pagados', width: 150 },
+      { prop: 'SaldoAnterior', name: 'Saldo Anterior', width: 150 },
+      { prop: 'Actions', name: 'Prestamistas', width: 100, cellTemplate: actionsTemplate }
+    ]"
+    [columnMode]="'force'"
+    [headerHeight]="55"
+    [footerHeight]="50"
+    [rowHeight]="50" 
+    [scrollbarV]="true"
+    [scrollbarH]="true"
+    class="datatable"
+    style="margin-top: 20px;">
+  </ngx-datatable>
+  
+  <ng-template #actionsTemplate let-row="row">
+    <ion-button (click)="openParticipantesModal(row)">Ver</ion-button>
+  </ng-template>
+  <ion-content>

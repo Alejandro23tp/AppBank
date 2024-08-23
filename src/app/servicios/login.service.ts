@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GeneralService } from './general.service';
@@ -7,11 +8,15 @@ import { GeneralService } from './general.service';
 })
 export class LoginService {
   usr_id: string='';
-  constructor(private http:HttpClient, private servG:GeneralService) { }
+  private environment = environment.apibank;
+  constructor(private http:HttpClient) { }
 
-  login(ci: string, clave: string) {
-    let url = `login/${ci}/${clave}`;
-    return this.http.get<any>(this.servG.URLAPI + url);
+  login(objlogin: any) {
+    const url = `${this.environment}login`;
+    return this.http.post<any>(url, {
+      usr_correo: objlogin.usr_correo,
+      password: objlogin.password
+    });
   }
 
   setUsrId(usr_id: string) {

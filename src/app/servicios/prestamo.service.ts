@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GeneralService } from './general.service';
@@ -6,45 +7,70 @@ import { GeneralService } from './general.service';
   providedIn: 'root'
 })
 export class PrestamoService {
+  private environment = environment.apibank;
 
   constructor(
     private http:HttpClient,
     private servG:GeneralService
   ) { }
-
-  registrarPagosPrestamo(ObjPrestamo:any){ //ESTE ES DEL prestamos.page.ts que registra en la tabla prestamos_participante
-    let url = 'registrarPagosPrestamo';
-    return this.http.post<any>(this.servG.URLAPI + url, this.servG.objectToFormData({
-      pp_partId: ObjPrestamo.part_id,
-      pp_semana: ObjPrestamo.semana,
-      pp_pagos: ObjPrestamo.valor,
-      pp_fecha: ObjPrestamo.fecha
-    }));
-  }
-
-  actualizarEstadoPrestamo(ObjPrestamo: any) {
-    let url = 'actualizarEstadoPrestamo';
-    return this.http.post<any>(
-      this.servG.URLAPI + url,
-      this.servG.objectToFormData({
-        sp_partId: ObjPrestamo.sp_partId,
-        sp_Snombre: ObjPrestamo.sp_Snombre
-      })
-    );
+//Este es el pago a cuotas de los prestampmos
+  registrarPagosPrestamo(ObjPrestamo:any){ 
+    const url = `${this.environment}pagoprestamo/mutate`;
+    return this.http.post(url, {
+      mutate: [
+        {
+          operation: 'create',
+          attributes: {
+            prestpart_id: ObjPrestamo.part_id,
+            semana: ObjPrestamo.semana,
+            valor: ObjPrestamo.valor,
+            fecha: ObjPrestamo.fecha,
+            observaciones: ObjPrestamo.observaciones
+          },
+        },
+      ],
+    });
   }
 
 
+//Registra o Inicializa el prestamo de un participante
   registrarPagoPrestamo(data: any) {
-    let url = 'registrarSemanaParticipante'; // Verifica si este es el endpoint correcto
-    return this.http.post<any>(
-      this.servG.URLAPI + url,
-      this.servG.objectToFormData({
-        sp_partId: data.part_id,
-        sp_Snombre: data.semana,
-        sp_prestamo: data.prestamo,
-        sp_interesp: data.interes,
-        sp_prestamofecha: data.prestamofecha
-      })
-    );
+    const url = `${this.environment}registrarPrestamo/mutate`;
+    return this.http.post(url, {
+      mutate: [
+        {
+          operation: 'create',
+          attributes: {
+            pp_partId: data.part_id,
+            pp_semana: data.semana,
+            pp_prestamo: data.prestamo,
+            interes: data.interes,
+            estado: data.estado,
+            fecha_pago: data.fecha
+          },
+        },
+      ],
+    });
+  }
+
+  getPrestamos_Participante(id:String){
+    const url = `${this.environment}listarPrestamosId`;
+    return this.http.post<any>(url,{
+      "pp_partId": id
+    });
+
+  }
+
+  listarPrestamismas(){
+    const url = `${this.environment}listarPrestamistas`;
+    return this.http.get<any>(url);
+  }
+
+  prestamistasCancelaron(estado:string, semana:string){
+    const url = `${this.environment}prestamistasCancelar`;
+    return this.http.post<any>(url,{
+      "estado": estado,
+      "pp_semana": semana
+    }); 
   }
 }

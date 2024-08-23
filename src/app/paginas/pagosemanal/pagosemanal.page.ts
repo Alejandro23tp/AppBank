@@ -1,9 +1,12 @@
+import { PrestamoService } from 'src/app/servicios/prestamo.service';
+import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { GeneralService } from 'src/app/servicios/general.service';
 import { LoginService } from 'src/app/servicios/login.service';
 import { ParticipantesService } from 'src/app/servicios/participantes.service';
+import { SaldoanteriorService } from 'src/app/servicios/saldoanterior.service';
 import { SemanasService } from 'src/app/servicios/semanas.service';
 
 @Component({
@@ -12,14 +15,14 @@ import { SemanasService } from 'src/app/servicios/semanas.service';
   styleUrls: ['./pagosemanal.page.scss'],
 })
 export class PagosemanalPage implements OnInit {
+  saldoAnterior: any;
   part_id: string;
   semanas: any[] = []; // Usaremos un arreglo de objetos para las semanas
-  currentDate: string = new Date().toISOString().substring(0, 10);
   cupos: number = 0; // Cupos por defecto
   pago: any = {
     semana: null, // Aquí guardaremos el objeto completo de la semana seleccionada
     valor: null,
-    fecha: this.currentDate,
+    fecha: formatDate(new Date(), 'yyyy-MM-dd', 'en-US'),
     responsable: '',
     estado: 'P'
   };
@@ -28,6 +31,7 @@ export class PagosemanalPage implements OnInit {
     interes: null,
     fecha: null
   };
+  
 
   constructor(
     private route: ActivatedRoute,
@@ -35,7 +39,9 @@ export class PagosemanalPage implements OnInit {
     private semanasService: SemanasService,
     private userlogin: LoginService,
     private participantesService: ParticipantesService,
-    private servG: GeneralService
+    private servG: GeneralService,
+    private sa: SaldoanteriorService,
+    private PrestServ: PrestamoService
   ) {}
 
   ngOnInit() {
@@ -49,15 +55,17 @@ export class PagosemanalPage implements OnInit {
     });
 
     // Construir el arreglo de semanas con objetos que contienen el número y el nombre
-    this.semanas = Array.from({ length: 50 }, (_, i) => ({
+   this.semanas = Array.from({ length: 50 }, (_, i) => ({
       numero: i + 1,
       nombre: `Semana ${i + 1}`
-    }));
-  }
+      }));
+
+    } 
   cargarCupos() {
     this.participantesService.obtenerCuposParticipante(this.part_id).subscribe(
-      data => {
-        this.cupos = data.data[0].part_cupos;
+      Response => {
+        console.log('Cupos obtenidos:', Response);
+        this.cupos = Response.data.part_cupos;
         console.log('Cupos obtenidos:', this.cupos);
         this.actualizarValor();
       },
@@ -72,29 +80,70 @@ export class PagosemanalPage implements OnInit {
   }
 
   realizarPagoSemanal() {
-    // Simula enviar el pago semanal al servidor
     const pagoSemanalData = {
       part_id: this.part_id,
       semana: "Semana "+this.pago.semana.numero,
       valor: this.pago.valor,
       fecha: this.pago.fecha,
       responsable: this.userlogin.getUsserId(),
-      estado: 'A',
-      prestamo: this.prestamo.cantidad,
-      interes: this.prestamo.interes,
-      prestamofecha: this.prestamo.fecha
+      inicioSemana: this.calcularInicioSemana(),
     };
 
+    this.semanasService.getSemanas_Participante(this.part_id).subscribe(
+      response => {
+        const array = response.data;
+        let elementoEncontrado = false; // Variable para controlar si se encuentra el elemento
+    
+        for (const element of array) {
+          if (element.nombre_semana === pagoSemanalData.semana) {
+            elementoEncontrado = true;
+            this.servG.fun_Mensaje('El pago semanal ya se encuentra registrado', 'warning');
+            break; // Salir del bucle cuando se encuentra el elemento
+          }
+        }
+    
+        if (!elementoEncontrado) {
+          this.semanasService.registrarPagoSemanal(pagoSemanalData).subscribe(data => {
+            this.servG.fun_Mensaje('Pago semanal guardado', 'success');
+            
+            this.sa.conseguirIdSemana_PresentarSemana(pagoSemanalData.semana).subscribe(resp=>{
+              console.log('Respuesta obtenida de la funcion conseguirIdSemana_PresentarSemana:', resp.data[0].id);
+              this.sa.calcularSaldoAnterior(resp.data[0].id.toString()).subscribe(respSaldoAnterior=>{
+                console.log('saldo anterior calculado', respSaldoAnterior);
+              });
+            });
+
+            this.servG.irA('/participantes');
+          });
+        }
+      }
+    );
+  }    
+/*
     // Llama al servicio para guardar el pago semanal en el servidor
-     this.semanasService.registrarPagoSemanal(pagoSemanalData).subscribe(data => {
-      console.log('Pago semanal guardado:', data);
-      this.servG.fun_Mensaje('Pago semanal guardado', 'success');
+     
+
+      const semanas= pagoSemanalData.semana;
+      this.sa.calcularSaldoAnterior(pagoSemanalData).subscribe(
+        respSaldoAnterior => {
+          this.saldoAnterior = respSaldoAnterior.saldo_anterior_calculado;
+          console.log('Saldo anterior:', this.saldoAnterior);
+
+          const data2 = { semana: semanas, saldo: this.saldoAnterior };
+          console.log('Datos a insertar:', data2);
+          this.sa.insertarSaldoAnterior(data2).subscribe(insertResponse => {
+            console.log('Saldo anterior insertado correctamente', insertResponse);
+          }, insertError => {
+            console.error('Error al insertar saldo anterior', insertError);
+          });
+      });
       this.servG.irA('/participantes');
     },
     error => {
       console.error('Error al guardar pago semanal', error);
     });
-  }
+
+    */
 
   // Método para calcular la fecha de inicio de la semana seleccionada
   calcularInicioSemana() {
@@ -114,4 +163,5 @@ export class PagosemanalPage implements OnInit {
       return null; // Manejar el caso cuando no se ha seleccionado ninguna semana
     }
   }
+
 }

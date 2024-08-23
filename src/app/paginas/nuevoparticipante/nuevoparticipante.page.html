@@ -5,7 +5,7 @@
         <ion-icon slot="icon-only" name="close"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Nuevo Participante</ion-title>
+    <ion-title>{{ isEditing ? 'Editar Participante' : 'Nuevo Participante' }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -16,21 +16,22 @@
         <ion-label position="floating">Cupos</ion-label>
         <ion-input type="number" [(ngModel)]="nuevoParticipante.cupo" clearInput></ion-input>
       </ion-item>
-  
+
       <ion-item>
         <ion-label position="floating">Nombre</ion-label>
         <ion-input type="text" [(ngModel)]="nuevoParticipante.nombre" clearInput></ion-input>
       </ion-item>
-  
+
       <ion-item>
         <ion-label position="floating">Teléfono</ion-label>
         <ion-input type="tel" [(ngModel)]="nuevoParticipante.telefono" clearInput></ion-input>
       </ion-item>
     </ion-list>
   </ion-card>
-  
 
   <div class="ion-padding">
-    <ion-button expand="block" color="primary" shape="round" (click)="guardarNuevoParticipante()">Guardar</ion-button>
+    <ion-button expand="block" color="primary" shape="round" (click)="isEditing ? actualizarParticipante() : guardarNuevoParticipante()">
+      {{ isEditing ? 'Actualizar' : 'Guardar' }}
+    </ion-button>
   </div>
 </ion-content>

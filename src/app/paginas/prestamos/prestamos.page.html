@@ -16,10 +16,11 @@
       <ion-item>
         <ion-label>Semana</ion-label>
         <ion-select placeholder="Seleccione Semana" [(ngModel)]="prestamo.semana">
-          <ion-select-option *ngFor="let semana of semanas" [value]="semana.sp_Snombre">
-            {{ semana }}
+          <ion-select-option *ngFor="let semana of semanas" [value]="{ id: semana.id, pp_semana: semana.pp_semana }">
+            {{ semana.pp_semana }}
           </ion-select-option>
         </ion-select>
+        
       </ion-item>
 
       <ion-item>
@@ -31,6 +32,13 @@
         <ion-label >Fecha</ion-label>
         <input type="date" [(ngModel)]="prestamo.fecha" name="fecha" required>
       </ion-item>
+
+
+        <ion-card>
+            <ion-label>Observaciones:</ion-label>
+            <ion-input type="text" placeholder="Describe aquí las observaciones" [(ngModel)]="prestamo.observaciones"></ion-input>
+        </ion-card>
+
 
       <ion-button expand="block" color="primary" shape="round" (click)="registrarPrestamo()">Registrar Préstamo</ion-button>
     </ion-card-content>

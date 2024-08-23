@@ -4,6 +4,12 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button expand="block" shape="round" (click)="limpiarPagina()" [disabled]="!selectedParticipanteId">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    
   </ion-toolbar>
 </ion-header>
 
@@ -15,11 +21,11 @@
     <ion-card-content>
       <ion-item>
         <ion-label>Participantes</ion-label>
-        <ion-select name="participantes" placeholder="Participantes" [(ngModel)]="selectedParticipanteId" (ionChange)="seleccionarParticipante($event)">
-          <ion-select-option *ngFor="let participante of participantes" [value]="participante.part_id">
+        <ion-select (ionChange)="seleccionarParticipante($event)">
+          <ion-select-option *ngFor="let participante of participantes" [value]="participante.id">
             {{ participante.part_nombre }}
           </ion-select-option>
-        </ion-select>
+        </ion-select>        
       </ion-item>
       <ion-button expand="block" color="secondary" fill="clear" shape="round" (click)="agregarParticipante()">Agregar/Editar Participante</ion-button>
     </ion-card-content>
@@ -37,7 +43,6 @@
           { prop: 'valor', name: 'Valor', width: 100 },
           { prop: 'fecha', name: 'Fecha', width: 150 },
           { prop: 'responsable', name: 'Responsable', width: 150 },
-          { prop: 'estado', name: 'Estado', width: 100 }
         ]"
         [columnMode]="'force'"
         [headerHeight]="50"
@@ -64,7 +69,8 @@
           { prop: 'prestamo', name: 'Préstamo', width: 150 },
           { prop: 'interes', name: 'Interés', width: 100 },
           { prop: 'fecha', name: 'Fecha', width: 150 },
-          { prop: 'estado', name: 'Estado', width: 100 }
+          { prop: 'estado', name: 'Estado', width: 100 },
+          { prop: 'Actions', name: 'Prestamistas', width: 100, cellTemplate: actionsTemplate }
         ]"
         [columnMode]="'force'"
         [headerHeight]="50"
@@ -73,8 +79,13 @@
         [scrollbarV]="true"
         [scrollbarH]="true"
         class="datatable"
-        style="margin-top: 20px;">
+        style="margin-top: 30px;">
       </ngx-datatable>
+
+      <ng-template #actionsTemplate let-row="row">
+        <ion-button (click)="openParticipantesModal(row)">Pagos</ion-button>
+      </ng-template>
+
       <ion-button (click)="reg_prestamo()" expand="block" color="primary" shape="round" [disabled]="!selectedParticipanteId">Registrar Préstamo</ion-button>
       <ion-button expand="block" color="secondary" shape="round" (click)="pagarPrestamo()" [disabled]="!selectedParticipanteId">Pagar Préstamo</ion-button>
     </ion-card-content>

@@ -1,0 +1,56 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Recordatorios</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Segmento para seleccionar el tipo de recordatorio -->
+  <ion-segment [(ngModel)]="selectedSegment">
+    <ion-segment-button value="semana">
+      <ion-label>Sin Cancelar Semana</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="prestamo">
+      <ion-label>Sin Cancelar Préstamo</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <!-- Selección de semana -->
+  <ion-item>
+    <ion-label>Selecciona la semana</ion-label>
+    <ion-select placeholder="Elige una semana" [(ngModel)]="selectedSemana" (ionChange)="onSemanaChange()">
+      <ion-select-option *ngFor="let semana of semanas" [value]="semana">{{ semana }}</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <!-- Lista de participantes -->
+  <ion-list *ngIf="participantes.length > 0">
+    <ion-card *ngFor="let participante of participantes">
+      <ion-card-header>
+        <ion-card-title>{{ participante.part_nombre }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>Teléfono: {{ participante.part_telefono }}</p>
+        <p>Cupos: {{ participante.part_cupos }}</p>
+        <p>Id: {{ participante.part_id }}</p>
+        <!-- Botón para enviar mensaje -->
+        <ion-button *ngIf="selectedSemana" (click)="enviarWhatsApp(participante)">Enviar Recordatorio</ion-button>
+        <!-- Botón para generar PDF y enviar por WhatsApp -->
+        <ion-button *ngIf="!selectedSemana" (click)="generarYEnviarDocx(participante)">Generar y Enviar PDF</ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+  <!-- Mensaje si no hay participantes -->
+  <ion-item *ngIf="participantes.length === 0 && selectedSemana">
+    No hay participantes sin cancelación para la semana seleccionada.
+  </ion-item>
+
+  <!-- Mensaje si no hay participantes y no se ha seleccionado ninguna semana -->
+  <ion-item *ngIf="participantes.length === 0 && !selectedSemana">
+    No hay participantes registrados.
+  </ion-item>
+</ion-content>

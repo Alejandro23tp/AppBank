@@ -7,11 +7,11 @@
 <ion-content class="login-container">
   <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
     <ion-item lines="none"> <ion-label position="stacked">Correo electrónico</ion-label>
-      <ion-input formControlName="ci" type="email" required></ion-input>
+      <ion-input formControlName="usr_correo" type="email" required></ion-input>
     </ion-item>
     <ion-item lines="none">
       <ion-label position="stacked">Contraseña</ion-label>
-      <ion-input formControlName="clave" type="password" required></ion-input>
+      <ion-input formControlName="password" type="password" required></ion-input>
     </ion-item>
     <ion-button expand="full" type="submit" [disabled]="loginForm.invalid">Iniciar sesión</ion-button>
   </form>

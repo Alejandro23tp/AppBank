@@ -1,0 +1,19 @@
+ion-content {
+    --padding-start: 0px; /* Ajusta el padding horizontal del ion-content si es necesario */
+    --padding-end: 0px; /* Ajusta el padding horizontal del ion-content si es necesario */
+    --padding-top: 10px; /* Ajusta el padding superior */
+    --padding-bottom: 10px; /* Ajusta el padding inferior */
+  }
+  
+  .participantes-container {
+    padding: 20px; /* Espacio alrededor del contenido dentro del contenedor del modal */
+    border: 1px solid #ddd; /* Borde del contenedor */
+    border-radius: 4px; /* Bordes redondeados del contenedor */
+    background-color: #fff; /* Color de fondo del contenedor */
+  }
+  
+  .prestamo-item {
+    margin-bottom: 10px; /* Espacio entre elementos de la lista */
+  }
+
+  

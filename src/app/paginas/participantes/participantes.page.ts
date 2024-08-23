@@ -6,6 +6,8 @@ import { SemanasService } from './../../servicios/semanas.service';
 import { GeneralService } from 'src/app/servicios/general.service';
 import { NavigationExtras } from '@angular/router';
 import { Router } from '@angular/router';
+import { PrestamoService } from 'src/app/servicios/prestamo.service';
+import { ParticipantespagosModalComponent } from 'src/app/participantespagos-modal/participantespagos-modal.component';
 
 @Component({
   selector: 'app-participantes',
@@ -17,6 +19,7 @@ export class ParticipantesPage implements OnInit {
   filas: any[] = [];
   prestamos: any[] = [];
   selectedParticipanteId: string | null = null;  // Inicialización
+  prestpart_id: string | null = null;  // Inicialización
 
   constructor(
     private participantesService: ParticipantesService,
@@ -24,7 +27,8 @@ export class ParticipantesPage implements OnInit {
     private modalController: ModalController,
     private semanasService: SemanasService,
     public servG: GeneralService,
-    private router: Router
+    private router: Router,
+    private prestserv: PrestamoService
   ) {}
 
   ngOnInit() {
@@ -32,6 +36,7 @@ export class ParticipantesPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.cargarParticipantes(); // Recargar los participantes cuando vuelvas a la página
     this.selectedParticipanteId = this.participantesService.getSelectedParticipanteId();
     if (this.selectedParticipanteId) {
       this.cargarFilas(this.selectedParticipanteId);
@@ -52,31 +57,38 @@ export class ParticipantesPage implements OnInit {
   seleccionarParticipante(event: CustomEvent<any>) {
     this.selectedParticipanteId = event.detail.value.toString();
     this.participantesService.setSelectedParticipanteId(this.selectedParticipanteId);
-    console.log('Participante seleccionado:', this.selectedParticipanteId);
     this.cargarFilas(this.selectedParticipanteId);
   }
 
   cargarFilas(id: string) {
     this.semanasService.getSemanas_Participante(id).subscribe(
-      data => {
-        this.filas = data.semanas.map((item: any) => ({
-          semana: item.sp_Snombre,
-          valor: item.sp_valor,
-          fecha: item.sp_fecha,
-          responsable: item.sp_responsable,
-          estado: item.sp_estado
+      response => {
+        this.filas = response.data.map((item: any) => ({
+          semana: item.nombre_semana,
+          valor: item.valor,
+          fecha: item.fecha_pago,
+          responsable: item.responsable
         }));
         
-        this.prestamos = data.semanas.filter((item: any) => item.sp_prestamo != 0).map((item: any) => ({
-          semana: item.sp_Snombre,
-          prestamo: item.sp_prestamo,
-          interes: item.sp_interesp,
-          fecha: item.sp_prestamofecha,
-          estado: item.estadoprestamo
+        this.cdr.detectChanges(); 
+      },
+      error => {
+        console.error('Error al cargar filas', error);
+      }
+    );
+
+    this.prestserv.getPrestamos_Participante(id).subscribe(
+      response => {
+        this.prestamos = response.data.map((item: any) => ({
+          id: item.id,
+          semana: item.pp_semana,
+          prestamo: item.pp_prestamo,
+          interes: item.interes,
+          
+          fecha: item.fecha_pago,
+          estado: item.estado
         }));
-        
-        console.log('Datos mapeados:', this.filas, this.prestamos);
-        this.cdr.detectChanges();
+        this.cdr.detectChanges(); 
       },
       error => {
         console.error('Error al cargar filas', error);
@@ -85,19 +97,13 @@ export class ParticipantesPage implements OnInit {
   }
 
   async agregarParticipante() {
-    const modal = await this.modalController.create({
-      component: NuevoparticipantePage,
-      componentProps: {}
-    });
-
-    modal.onDidDismiss().then((data) => {
-      if (data && data.data) {
-        this.cargarParticipantes();
-      }
-    });
-
-    await modal.present();
+    const navigationExtras: NavigationExtras = {
+      queryParams: { part_id: this.selectedParticipanteId || '' }
+    };
+    this.router.navigate(['/nuevoparticipante'], navigationExtras);
   }
+  
+  
 
   agregarPagoSemanal() {
     const navigationExtras: NavigationExtras = {
@@ -118,5 +124,28 @@ export class ParticipantesPage implements OnInit {
       queryParams: { part_id: this.selectedParticipanteId }
     };
     this.router.navigate(['/reg-prestamos'], navigationExtras);
+  }
+
+  limpiarPagina() {
+    // Vaciar todos los arrays y resetear propiedades
+    this.participantes = [];
+    this.filas = [];
+    this.prestamos = [];
+    this.selectedParticipanteId = null;
+    this.cargarParticipantes();
+    // Llamar a ChangeDetectorRef para asegurarse de que los cambios se reflejen en la UI
+    this.cdr.detectChanges();
+
+    console.log('Página limpiada');
+  }
+
+  async openParticipantesModal(row: any) {
+    const modal = await this.modalController.create({
+      component: ParticipantespagosModalComponent,
+      componentProps: {
+        data: row
+      }
+    });
+    return await modal.present();
   }
 }

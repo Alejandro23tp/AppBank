@@ -19,25 +19,23 @@ export class LoginPage {
     private toastCtrl: ToastController
   ) {
     this.loginForm = this.fb.group({
-      ci: ['', [Validators.required]],
-      clave: ['', [Validators.required]]
+      usr_correo: ['', [Validators.required]],
+      password: ['', [Validators.required]]
     });
   }
 
   async onLogin() {
     if (this.loginForm.valid) {
-      const { ci, clave } = this.loginForm.value;
-      this.loginService.login(ci, clave).subscribe(
+      const objlogin = this.loginForm.value;
+      this.loginService.login(objlogin).subscribe(
         async (response) => {
-          if (response.data && response.data.length > 0) {
+          
+          if (response.cant===1) {
             this.errorMessage = ''; // Clear any previous error message
-            // Save the logged user CI
-            //this.loginService.setLoggedUserCI(ci);
-            // Navigate to another page or handle successful login
             this.navCtrl.navigateForward('/principal');
-            const ObjJSON = response.data[0];
+            const ObjJSON = response.data;
             console.log(ObjJSON.usr_usuario);
-            this.loginService.setUsrId(ObjJSON.usr_id);
+            this.loginService.setUsrId(ObjJSON.usr_usuario);
           } else {
             this.errorMessage = response.mensaje || 'Credenciales incorrectas';
             const toast = await this.toastCtrl.create({
